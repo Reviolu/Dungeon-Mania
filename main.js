@@ -1,3 +1,7 @@
+import { Enemy } from './enemy.js'
+
+let cursors;
+let player;
 
 var config = {
     type: Phaser.AUTO,
@@ -16,10 +20,11 @@ var config = {
     }
 };
 
-var player;
+
 var game = new Phaser.Game(config)
 
 function preload () {
+    //player assets
     this.load.spritesheet('player_run_right', "assets/player/player_run_right.png", {
         frameWidth: 192,
         frameHeight: 192
@@ -39,12 +44,18 @@ function preload () {
         frameWidth: 192,
         frameHeight: 192
     });
+
+    //enemy assets
+    this.load.spritesheet('bat_fly', "assets/enemy/Bat/Bat_Fly.png", {
+        frameWidth: 64,
+        frameHeight: 64        
+    });
 }
 
 function create() {
-    player = this.physics.add.sprite(720, 450, 'player_idle', 0)
+    player = this.physics.add.sprite(720, 450, 'player_idle_right', 0)
     cursors = this.input.keyboard.createCursorKeys();
-    let facingRight = true; 
+
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('player_run_left', {start: 0, end: 5}),
@@ -98,10 +109,23 @@ function create() {
         frames: this.anims.generateFrameNumbers('player_idle_left', {start: 0, end: 5}),
         frameRate: 10,
     })
+
+    //enemy animations
+    this.anims.create({
+        key: 'bat_walk',
+        frames: this.anims.generateFrameNumbers('bat_fly', {start: 0, end: 3}),
+        frameRate: 10,
+        repeat: -1
+    })   
+    let enemy = new Enemy(this, Phaser.Math.Between(1650, 1800), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
 }
 
 let facingRight = true;
 function update() {
+    var px = player.body.x
+    var py = player.body.y;
+
+    console.log(px, py);
 
     if (cursors.left.isDown) {
         player.setVelocityX(-160);
@@ -143,6 +167,9 @@ function update() {
 
 
     }
+
+
+
 
 
 }
