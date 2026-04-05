@@ -55,63 +55,10 @@ function preload () {
 }
 
 function create() {
-    player = this.physics.add.sprite(720, 450, 'player_idle_right', 0)
+    player = new Player(this, 720, 450, 'player_idle_right');
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('player_run_left', {start: 0, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('player_run_right', {start: 0, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'up_right',
-        frames: this.anims.generateFrameNumbers('player_run_right', {start: 4, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'down_right',
-        frames: this.anims.generateFrameNumbers('player_run_right', {start: 4, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'up_left',
-        frames: this.anims.generateFrameNumbers('player_run_left', {start: 4, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'down_left',
-        frames: this.anims.generateFrameNumbers('player_run_left', {start: 4, end: 5}),
-        frameRate: 10,
-        repeat: -1
-    })
-
-    this.anims.create({
-        key: 'idle_right',
-        frames: this.anims.generateFrameNumbers('player_idle_right', {start: 0, end: 5}),
-        frameRate: 10,
-    })
-
-    this.anims.create({
-        key: 'idle_left',
-        frames: this.anims.generateFrameNumbers('player_idle_left', {start: 0, end: 5}),
-        frameRate: 10,
-    })
-
+   
     //enemy animations
     this.anims.create({
         key: 'bat_walk',
@@ -169,9 +116,5 @@ function update() {
 
 
     }
-
-
-
-
 
 }
