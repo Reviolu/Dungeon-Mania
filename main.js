@@ -7,8 +7,12 @@ let player;
 
 let config = {
     type: Phaser.AUTO,
-    width: 1880,
-    height: 900,
+    width: 1920,
+    height: 1080,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -26,6 +30,7 @@ let config = {
 let game = new Phaser.Game(config)
 
 function preload () {
+    this.load.image('background', 'assets/background2.png')
     //player assets
     this.load.spritesheet('player_run_right', "assets/player/player_run_right.png", {
         frameWidth: 192,
@@ -60,10 +65,11 @@ function preload () {
 }
 
 function create() {
+   this.add.image(0, 0, 'background').setOrigin(0, 0);    
     player = new Player(this, 720, 450, 'player_idle_right');
     cursors = this.input.keyboard.createCursorKeys();
 
-   
+
     //enemy animations
     this.anims.create({
         key: 'bat_walk',
@@ -71,7 +77,7 @@ function create() {
         frameRate: 10,
         repeat: -1
     })   
-    let enemy = new Enemy(this, Phaser.Math.Between(1650, 1800), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
+    let enemy = new Enemy(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
 }
 
 function update() {
