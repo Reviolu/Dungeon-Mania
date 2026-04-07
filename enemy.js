@@ -5,7 +5,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite{
         this.x = x;
         this.y = y;
         this.sprite = sprite;
-
+        this.health = 10;
         scene.add.existing(this);
         scene.physics.add.existing(this);
 

@@ -5,7 +5,7 @@ import { Enemy } from './enemy.js'
 let cursors;
 let player;
 
-var config = {
+let config = {
     type: Phaser.AUTO,
     width: 1880,
     height: 900,
@@ -23,7 +23,7 @@ var config = {
 };
 
 
-var game = new Phaser.Game(config)
+let game = new Phaser.Game(config)
 
 function preload () {
     //player assets
@@ -43,6 +43,11 @@ function preload () {
     });
 
     this.load.spritesheet('player_idle_left', "assets/player/player_idle_left.png", {
+        frameWidth: 192,
+        frameHeight: 192
+    });
+
+    this.load.spritesheet('player_attack1', "assets/player/player_attack1.png", {
         frameWidth: 192,
         frameHeight: 192
     });
@@ -69,52 +74,8 @@ function create() {
     let enemy = new Enemy(this, Phaser.Math.Between(1650, 1800), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
 }
 
-let facingRight = true;
 function update() {
-    var px = player.body.x
-    var py = player.body.y;
-
-    console.log(px, py);
-
-    if (cursors.left.isDown) {
-        player.setVelocityX(-160);
-        player.anims.play('left', true);
-        facingRight = false;
-        console.log(facingRight);
-    } else if (cursors.right.isDown) {
-        player.setVelocityX(160);
-        player.anims.play('right', true);
-
-        facingRight = true;
-        console.log("right button,", facingRight);
-    } 
-    else if (cursors.up.isDown) {
-        player.setVelocityY(-160);
-
-        if (facingRight) {
-            player.anims.play('up_right', true);
-        } else {
-            player.anims.play('up_left', true);
-        }
-        
-    } else if (cursors.down.isDown) {
-        player.setVelocityY(160);
-        if (facingRight) {
-            player.anims.play('down_right', true);
-        } else {
-            player.anims.play('down_left', true);
-        }
-    } else {
-        player.setVelocityX(0);
-        player.setVelocityY(0);
-        console.log("idle", facingRight);
-        if (facingRight == true) {
-            player.anims.play('idle_right', true)
-        } else {
-            player.anims.play('idle_left', true);
-        }
-
-
-    }
+    player.update(cursors);
+    
 
 }

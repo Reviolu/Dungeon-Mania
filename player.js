@@ -5,9 +5,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         scene.physics.add.existing(this);
-
+        this.health = 100;
+        this.facingRight = true;
         this.loadAnimations(scene);
-        this.play('player_idle_right');
+        this.play('player_attack1');
     }
 
     loadAnimations(scene) {
@@ -65,5 +66,51 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             frameRate: 10,
         })
 
+        scene.anims.create({
+            key: 'player_attack1',
+            frames: scene.anims.generateFrameNumbers('player_attack1', {start: 0, end: 5}),
+            frameRate: 8,
+            repeat: -1
+        });
+
+
+    }
+
+    update(cursors) {
+        if (cursors.left.isDown) {
+            this.setVelocityX(-160);
+            this.anims.play('right', true);
+            this.facingRight = false;
+            this.setFlipX(true)
+            console.log(this.facingRight);
+        } else if (cursors.right.isDown) {
+            this.setVelocityX(160);
+            this.anims.play('right', true);
+            this.setFlipX(false)
+            this.facingRight = true;
+            console.log("right button,", this.facingRight);
+        } 
+        else if (cursors.up.isDown) {
+            this.setVelocityY(-160);
+            this.anims.play('up_right', true);
+            this.setFlipX(!this.facingRight);
+        
+        } else if (cursors.down.isDown) {
+            this.setVelocityY(160);
+            this.anims.play('down_right', true);
+            this.setFlipX(!this.facingRight);
+        
+        } else {
+            this.setVelocityX(0);
+            this.setVelocityY(0);
+            console.log("idle", this.facingRight);
+         if (this.facingRight == true) {
+                this.setFlipX(false)
+                this.anims.play('player_attack1', true)
+            } else {
+                this.setFlipX(true)
+                this.anims.play('player_attack1', true);
+            }
+        }
     }
 }
