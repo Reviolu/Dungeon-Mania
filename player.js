@@ -7,6 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.health = 100;
         this.facingRight = true;
+        this.invulnerable = false;
         this.loadAnimations(scene);
         this.play('player_attack1');
     }
@@ -77,26 +78,30 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(cursors) {
+        let speed = 160;
+
+        this.setVelocity(0);
+
         if (cursors.left.isDown) {
-            this.setVelocityX(-160);
+            this.setVelocityX(-speed);
             this.anims.play('right', true);
             this.facingRight = false;
             this.setFlipX(true)
             console.log(this.facingRight);
         } else if (cursors.right.isDown) {
-            this.setVelocityX(160);
+            this.setVelocityX(speed);
             this.anims.play('right', true);
             this.setFlipX(false)
             this.facingRight = true;
             console.log("right button,", this.facingRight);
         } 
         else if (cursors.up.isDown) {
-            this.setVelocityY(-160);
+            this.setVelocityY(-speed);
             this.anims.play('up_right', true);
             this.setFlipX(!this.facingRight);
         
         } else if (cursors.down.isDown) {
-            this.setVelocityY(160);
+            this.setVelocityY(speed);
             this.anims.play('down_right', true);
             this.setFlipX(!this.facingRight);
         

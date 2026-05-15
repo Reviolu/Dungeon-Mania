@@ -8,6 +8,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite{
         this.health = 10;
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.body.setImmovable(true);
 
         this.play(animation);
     }

@@ -2,8 +2,6 @@ import { Player } from './player.js'
 import { Enemy } from './enemy.js'
 
 
-let cursors;
-let player;
 
 let config = {
     type: Phaser.AUTO,
@@ -30,7 +28,7 @@ let config = {
 let game = new Phaser.Game(config)
 
 function preload () {
-    this.load.image('background', 'assets/background2.png')
+    this.load.image('background', 'assets/background2.png');
     //player assets
     this.load.spritesheet('player_run_right', "assets/player/player_run_right.png", {
         frameWidth: 192,
@@ -65,10 +63,12 @@ function preload () {
 }
 
 function create() {
-   this.add.image(0, 0, 'background').setOrigin(0, 0);    
-    player = new Player(this, 720, 450, 'player_idle_right');
-    cursors = this.input.keyboard.createCursorKeys();
+    this.add.image(0, 0, 'background').setOrigin(0, 0);  
+    this.player = new Player(this, 720, 450, 'player_idle_right');
+    this.cursors = this.input.keyboard.createCursorKeys();
 
+
+    // this.player.body.setCollideWorldBounds(true);
 
     //enemy animations
     this.anims.create({
@@ -78,10 +78,31 @@ function create() {
         repeat: -1
     })   
     let enemy = new Enemy(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
+
+    this.physics.add.collider(this.player, enemy, enemyHitPlayer, null, this);
+
+    function enemyHitPlayer(player, enemy) {
+        if (player.invulnerable) {
+            return;
+        }
+
+        player.health -= 5;
+        console.log("hit");
+        console.log("health: ", player.health);
+        player.invulnerable = true;
+
+        player.setTint(0xff0000);
+        this.time.delayedCall(300, () => {
+            player.invulnerable = false;
+            player.clearTint();
+        })
+    }
 }
 
 function update() {
-    player.update(cursors);
+    this.player.update(this.cursors);
     
 
 }
+
+
