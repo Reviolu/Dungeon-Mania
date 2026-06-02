@@ -1,6 +1,6 @@
 import { Player } from './player.js'
 import { Enemy } from './enemy.js'
-
+import { Bat } from './bat.js'
 
 
 let config = {
@@ -27,7 +27,7 @@ let config = {
 
 let game = new Phaser.Game(config)
 
-function preload () {
+function preload (this: Phaser.Scene) {
     this.load.image('background', 'assets/background2.png');
     //player assets
     this.load.spritesheet('player_run_right', "assets/player/player_run_right.png", {
@@ -62,10 +62,10 @@ function preload () {
     });
 }
 
-function create() {
+function create(this: Phaser.Scene) {
     this.add.image(0, 0, 'background').setOrigin(0, 0);  
-    this.player = new Player(this, 720, 450, 'player_idle_right');
-    this.cursors = this.input.keyboard.createCursorKeys();
+    const player = new Player(this, 720, 450, 'player_idle_right');
+    const cursors = this.input.keyboard?.createCursorKeys() as Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
 
     // this.player.body.setCollideWorldBounds(true);
@@ -77,12 +77,24 @@ function create() {
         frameRate: 10,
         repeat: -1
     })   
-    let enemy = new Enemy(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800), 'bat_fly', 'bat_walk');
 
-    this.physics.add.collider(this.player, enemy, enemyHitPlayer, null, this);
+    const enemies = this.physics.add.group({
+        maxSize: 20,
+        runChildUpdate: true
+    });
 
-    function enemyHitPlayer(player, enemy) {
-        if (player.invulnerable) {
+    // this.time.addEvent({
+    //     delay: 5000,
+    //     callback: this.spawnProceduralEnemy,
+    //     callbackScope: this,
+    //     loop: true
+    // });
+
+
+    const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
+
+    this.physics.add.collider(player, enemy, (playerObj, enemyObj) => {
+                if (player.invulnerable) {
             return;
         }
 
@@ -92,16 +104,26 @@ function create() {
         player.invulnerable = true;
 
         player.setTint(0xff0000);
-        this.time.delayedCall(300, () => {
+        this.time.delayedCall(250, () => {
             player.invulnerable = false;
             player.clearTint();
-        })
-    }
+        })});
+
+    
+    this.registry.set('player', player);
+    this.registry.set('cursors', cursors);
+
 }
 
-function update() {
-    this.player.update(this.cursors);
+function update(this: Phaser.Scene) {
+    const player = this.registry.get('player') as Player;
+    const cursors = this.registry.get('cursors') as Phaser.Types.Input.Keyboard.CursorKeys;
+    player.update(cursors);
     
+}
+
+
+function spawnProceduralEnemy() {
 
 }
 

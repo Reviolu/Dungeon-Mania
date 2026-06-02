@@ -1,5 +1,9 @@
 export class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture) {
+    health: number;
+    facingRight: boolean;
+    invulnerable: boolean;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
 
         scene.add.existing(this);
@@ -12,7 +16,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.play('player_attack1');
     }
 
-    loadAnimations(scene) {
+    loadAnimations(scene: Phaser.Scene) {
         scene.anims.create({
             key: 'left',
             frames: scene.anims.generateFrameNumbers('player_run_left', {start: 0, end: 5}),
@@ -77,7 +81,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     }
 
-    update(cursors) {
+    update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
         let speed = 160;
 
         this.setVelocity(0);

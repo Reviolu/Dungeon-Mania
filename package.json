@@ -1,9 +1,12 @@
 {
   "name": "dungeonmania",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "tsc && vite build"
   },
   "keywords": [],
   "author": "",
@@ -11,5 +14,9 @@
   "description": "",
   "dependencies": {
     "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16"
   }
 }
