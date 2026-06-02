@@ -9,11 +9,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         scene.physics.add.existing(this);
-        this.health = 100;
+        this.health = 10;
         this.facingRight = true;
         this.invulnerable = false;
         this.loadAnimations(scene);
         this.play('player_attack1');
+        (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
     }
 
     loadAnimations(scene: Phaser.Scene) {
@@ -82,7 +83,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
-        let speed = 160;
+        let speed = 200;
 
         this.setVelocity(0);
 
@@ -121,5 +122,32 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('player_attack1', true);
             }
         }
+    }
+
+    takeHit(damage: number) {
+        if (this.invulnerable) return;
+
+        this.health -= damage;
+        this.setTint(0xff0000);
+        if (this.health <= 0) {
+            this.die();
+            return;
+        }
+
+        this.invulnerable = true;
+
+        this.scene.time.delayedCall(350, () => {
+            this.invulnerable = false;
+            this.clearTint();
+        });
+        
+    }
+
+    attack(damage: number, enemy: Phaser.Physics.Arcade.Sprite) {
+        
+    }
+
+    die() {
+        this.destroy();
     }
 }

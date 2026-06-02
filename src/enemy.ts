@@ -12,4 +12,6 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite{
 
         this.play(animation);
     }
+     
+    abstract update(player: Phaser.Physics.Arcade.Sprite): void;
 }

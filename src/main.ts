@@ -8,7 +8,7 @@ let config = {
     width: 1920,
     height: 1080,
     scale: {
-        mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     physics: {
@@ -29,6 +29,7 @@ let game = new Phaser.Game(config)
 
 function preload (this: Phaser.Scene) {
     this.load.image('background', 'assets/background2.png');
+
     //player assets
     this.load.spritesheet('player_run_right', "assets/player/player_run_right.png", {
         frameWidth: 192,
@@ -63,13 +64,15 @@ function preload (this: Phaser.Scene) {
 }
 
 function create(this: Phaser.Scene) {
-    this.add.image(0, 0, 'background').setOrigin(0, 0);  
+    const bg = this.add.image(0, 0, 'background').setOrigin(0, 0);
+    bg.displayWidth = this.scale.width;
+    bg.displayHeight = this.scale.height;  
+
     const player = new Player(this, 720, 450, 'player_idle_right');
     const cursors = this.input.keyboard?.createCursorKeys() as Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
-
-    // this.player.body.setCollideWorldBounds(true);
-
+    this.physics.world.setBounds(190, 65, 1540, 915);
+    player.setCollideWorldBounds(true);
     //enemy animations
     this.anims.create({
         key: 'bat_walk',
@@ -83,42 +86,31 @@ function create(this: Phaser.Scene) {
         runChildUpdate: true
     });
 
-    // this.time.addEvent({
-    //     delay: 5000,
-    //     callback: this.spawnProceduralEnemy,
-    //     callbackScope: this,
-    //     loop: true
-    // });
+    this.time.addEvent({
+        delay: 5000,
+        callback: () => {
+            const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
+            enemies.add(enemy);
+        },
+        callbackScope: this,
+        loop: true
+    });
 
 
     const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
-
-    this.physics.add.collider(player, enemy, (playerObj, enemyObj) => {
-                if (player.invulnerable) {
-            return;
-        }
-
-        player.health -= 5;
-        console.log("hit");
-        console.log("health: ", player.health);
-        player.invulnerable = true;
-
-        player.setTint(0xff0000);
-        this.time.delayedCall(250, () => {
-            player.invulnerable = false;
-            player.clearTint();
-        })});
-
-    
+ 
     this.registry.set('player', player);
     this.registry.set('cursors', cursors);
+    this.registry.set('enemy', enemy);
 
 }
 
 function update(this: Phaser.Scene) {
     const player = this.registry.get('player') as Player;
     const cursors = this.registry.get('cursors') as Phaser.Types.Input.Keyboard.CursorKeys;
+    const enemy = this.registry.get('enemy') as Bat;
     player.update(cursors);
+    enemy.update(player);
     
 }
 
