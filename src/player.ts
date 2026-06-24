@@ -25,8 +25,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
 
         this.scene.time.addEvent({
-            delay: 600,
-            callback: () => this.attack(),
+            delay: 400,
+            callback: () => {
+                let currentAnimationKey = this.anims.getName();
+
+                if (currentAnimationKey === 'player_attack1') {
+                    this.attack();                    
+                }
+            },
             loop: true
         });
     }
