@@ -24,7 +24,6 @@ let config = {
     }
 };
 
-
 let game = new Phaser.Game(config)
 
 function preload (this: Phaser.Scene) {
@@ -81,25 +80,24 @@ function create(this: Phaser.Scene) {
         repeat: -1
     })   
     
-
     const enemies: Enemy[] = [];
-
 
     this.time.addEvent({
         delay: 5000,
         callback: () => {
             const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
             enemies.push(enemy);
-            console.log("after group add:", enemy.visible, enemy.active, enemy.alpha, enemy.x, enemy.y, enemy.body);
+            // console.log("after group add:", enemy.visible, enemy.active, enemy.alpha, enemy.x, enemy.y, enemy.body);
+            this.physics.add.overlap(player.attackHitBox, enemy, () => {
+                enemy.takeHit(player.damage);
+                console.log("enemy hit, health:", enemy.health);
+            });
+            
         },
         callbackScope: this,
         loop: true
     });
     
-    this.physics.add.overlap(player.attackHitBox, enemies, (_, enemyObject) => {
-        const enemy = enemyObject as Enemy;
-        enemy.takeHit(player.damage);
-    });
 
  
     this.registry.set('player', player);
@@ -113,8 +111,18 @@ function update(this: Phaser.Scene) {
     const enemies = this.registry.get('enemies') as Enemy[];
     player.update(cursors);
     enemies.forEach(enemy => {
-        enemy.update(player);
+        // console.log("enemy is alive: ", enemy.alive);
+        if (enemy.alive) {
+            enemy.update(player);
+        }
     });
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const enemy = enemies[i];
+        if (!enemy) continue;
+        if (!enemy.alive) {
+            enemies.splice(i, 1);
+        }
+    }
 }
 
 

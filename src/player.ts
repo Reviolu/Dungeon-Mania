@@ -13,7 +13,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         scene.physics.add.existing(this);
-        this.damage = 5;
+        this.damage = 2;
         this.health = 10;
         this.facingRight = true;
         this.invulnerable = false;
@@ -23,6 +23,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.loadAnimations(scene);
         this.play('player_attack1');
         (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+
+        this.scene.time.addEvent({
+            delay: 600,
+            callback: () => this.attack(),
+            loop: true
+        });
     }
 
     loadAnimations(scene: Phaser.Scene) {

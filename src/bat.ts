@@ -10,17 +10,10 @@ export class Bat extends Enemy {
 
     update(player: Player) {
         this.scene.physics.moveToObject(this, player, 100);
-
+    // console.log("bat update called", this.x, this.y);
         if (Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y) < 50 && !player.invulnerable) {
-            player.takeHit(4);
+            player.takeHit(0);
 
-        }
-    }
-
-    takeHit(damage: number) {
-        this.health -= damage;
-        if (this.health <= 0) {
-            this.die();
         }
     }
 }
