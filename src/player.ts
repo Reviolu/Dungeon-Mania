@@ -1,7 +1,11 @@
+import type { Enemy } from "./enemy";
+
 export class Player extends Phaser.Physics.Arcade.Sprite {
     health: number;
     facingRight: boolean;
     invulnerable: boolean;
+    attackHitBox: Phaser.GameObjects.Rectangle;
+    damage: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
@@ -9,9 +13,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         scene.physics.add.existing(this);
+        this.damage = 5;
         this.health = 10;
         this.facingRight = true;
         this.invulnerable = false;
+        this.attackHitBox = this.scene.add.rectangle(this.x, this.y, 50, 50);
+        this.scene.physics.add.existing(this.attackHitBox);
+        (this.attackHitBox.body as Phaser.Physics.Arcade.Body).enable = false;
         this.loadAnimations(scene);
         this.play('player_attack1');
         (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
@@ -136,15 +144,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.invulnerable = true;
 
-        this.scene.time.delayedCall(350, () => {
+        this.scene.time.delayedCall(500, () => {
             this.invulnerable = false;
             this.clearTint();
         });
         
     }
 
-    attack(damage: number, enemy: Phaser.Physics.Arcade.Sprite) {
-        
+    attack() {
+        const offset = this.facingRight ? 50 : -50;
+        this.attackHitBox.setPosition(this.x + offset, this.y);
+        const body = this.attackHitBox.body as Phaser.Physics.Arcade.Body;
+        body.enable = true;
+
+        this.scene.time.delayedCall(100, () => {
+            body.enable = false;
+        });
     }
 
     die() {

@@ -80,38 +80,41 @@ function create(this: Phaser.Scene) {
         frameRate: 10,
         repeat: -1
     })   
+    
 
-    const enemies = this.physics.add.group({
-        maxSize: 20,
-        runChildUpdate: true
-    });
+    const enemies: Enemy[] = [];
+
 
     this.time.addEvent({
         delay: 5000,
         callback: () => {
             const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
-            enemies.add(enemy);
+            enemies.push(enemy);
+            console.log("after group add:", enemy.visible, enemy.active, enemy.alpha, enemy.x, enemy.y, enemy.body);
         },
         callbackScope: this,
         loop: true
     });
+    
+    this.physics.add.overlap(player.attackHitBox, enemies, (_, enemyObject) => {
+        const enemy = enemyObject as Enemy;
+        enemy.takeHit(player.damage);
+    });
 
-
-    const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
  
     this.registry.set('player', player);
     this.registry.set('cursors', cursors);
-    this.registry.set('enemy', enemy);
-
+    this.registry.set('enemies', enemies);
 }
 
 function update(this: Phaser.Scene) {
     const player = this.registry.get('player') as Player;
     const cursors = this.registry.get('cursors') as Phaser.Types.Input.Keyboard.CursorKeys;
-    const enemy = this.registry.get('enemy') as Bat;
+    const enemies = this.registry.get('enemies') as Enemy[];
     player.update(cursors);
-    enemy.update(player);
-    
+    enemies.forEach(enemy => {
+        enemy.update(player);
+    });
 }
 
 

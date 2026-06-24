@@ -8,10 +8,20 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite{
         this.health = 10;
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
 
         this.play(animation);
     }
      
     abstract update(player: Phaser.Physics.Arcade.Sprite): void;
+
+    takeHit(damage: number) {
+        this.health -= damage;
+        if (this.health <= 0) {
+            this.die();
+        }
+    }
+    
+    die() {
+        this.destroy();
+    }
 }
