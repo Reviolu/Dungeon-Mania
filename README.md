@@ -17,7 +17,7 @@ The game features real-time combat, procedural enemy spawning, and currently loo
 2. Navigate into the project:
    cd dungeon-mania
 
-3. Start a local server (required for Phaser assets):
+3. Start a local server:
    npm live-server
 
 4. Open the game in your browser
