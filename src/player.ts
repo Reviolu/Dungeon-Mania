@@ -8,6 +8,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     attackHitBox: Phaser.GameObjects.Rectangle;
     damage: number;
     xp: number;
+    knockbacked: boolean;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
@@ -20,6 +21,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.health = 10;
         this.facingRight = true;
         this.invulnerable = false;
+        this.knockbacked = false;
         this.attackHitBox = this.scene.add.rectangle(this.x, this.y, 50, 50);
         this.scene.physics.add.existing(this.attackHitBox);
         (this.attackHitBox.body as Phaser.Physics.Arcade.Body).enable = false;
@@ -107,7 +109,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
         let speed = PLAYER_SPEED;
-
+        if (this.knockbacked) {
+            return;
+        }
         this.setVelocity(0);
 
         if (cursors.left.isDown) {
@@ -147,8 +151,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    takeHit(damage: number) {
+    takeHit(damage: number, enemyX: number, enemyY: number) {
+
         if (this.invulnerable) return;
+        let curr_angle = Phaser.Math.Angle.Between(enemyX, enemyY, this.x, this.y);
+
+        this.setVelocity(Math.cos(curr_angle) * 300, Math.sin(curr_angle) * 300); 
+        this.knockbacked = true;
 
         this.health -= damage;
         this.setTint(0xff0000);
@@ -159,7 +168,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.invulnerable = true;
 
-        this.scene.time.delayedCall(500, () => {
+        this.scene.time.delayedCall(100, () => {
+            this.knockbacked = false;
+
+        });
+
+        this.scene.time.delayedCall(400, () => {
             this.invulnerable = false;
             this.clearTint();
         });
