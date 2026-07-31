@@ -1,6 +1,6 @@
-import { Player } from './player.js'
-import { Enemy } from './enemy.js'
-import { Bat } from './bat.js'
+import { Player } from './player'
+import { Enemy } from './enemy'
+import { Bat } from './bat'
 
 
 let config = {
@@ -83,13 +83,13 @@ function create(this: Phaser.Scene) {
     const enemies: Enemy[] = [];
 
     this.time.addEvent({
-        delay: 5000,
+        delay: 2000,
         callback: () => {
-            const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(700, 800));
+            const enemy = new Bat(this, Phaser.Math.Between(1400, 1600), Phaser.Math.Between(200, 800));
             enemies.push(enemy);
             // console.log("after group add:", enemy.visible, enemy.active, enemy.alpha, enemy.x, enemy.y, enemy.body);
             this.physics.add.overlap(player.attackHitBox, enemy, () => {
-                enemy.takeHit(player.damage);
+                enemy.takeHit(player.damage, player.x, player.y);
                 console.log("enemy hit, health:", enemy.health);
             });
             

@@ -1,3 +1,4 @@
+import { PLAYER_SPEED } from "../config";
 import type { Enemy } from "./enemy";
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -6,6 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     invulnerable: boolean;
     attackHitBox: Phaser.GameObjects.Rectangle;
     damage: number;
+    xp: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
@@ -13,7 +15,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
 
         scene.physics.add.existing(this);
-        this.damage = 2;
+        this.xp = 0;
+        this.damage = 1;
         this.health = 10;
         this.facingRight = true;
         this.invulnerable = false;
@@ -103,7 +106,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
-        let speed = 200;
+        let speed = PLAYER_SPEED;
 
         this.setVelocity(0);
 

@@ -9,11 +9,17 @@ export class Bat extends Enemy {
     }
 
     update(player: Player) {
+
+        if (this.knockbacked) {
+            // console.log("current position of bat", this.x, this.y);
+            return;
+        }
         this.scene.physics.moveToObject(this, player, 100);
     // console.log("bat update called", this.x, this.y);
         if (Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y) < 50 && !player.invulnerable) {
             player.takeHit(0);
 
         }
+        // console.log("current position of bat", this.x, this.y);
     }
 }
